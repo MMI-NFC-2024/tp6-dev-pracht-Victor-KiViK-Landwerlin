@@ -3,19 +3,29 @@ import PlotFigure from "../components/PlotFigure.astro";
 import Layout from "../layouts/Layout.astro";
 import * as Plot from "@observablehq/plot";
 import penguins from "../assets/penguins.json";
+
+// Déterminer automatiquement la liste des espèces
+const species = [...new Set(penguins.map(penguin => penguin.species))];
 ---
 
 <Layout>
-  <h1 class="text-2xl">Test Astro et Plot (Observablehq)</h1>
-  <PlotFigure
-    options={{
-      marks: [
-        Plot.dot(penguins, {
-          x: "culmen_length_mm",
-          y: "culmen_depth_mm",
-          stroke: "species",
-        }),
-      ],
-    }}
-  />
+  <h1 class="text-2xl mb-6">Test Astro et Plot (Observablehq)</h1>
+  <div class="flex overflow-x-auto space-x-6">
+    {species.map((specie) => (
+      <div class="flex-shrink-0 w-[500px]">
+        <h2 class="text-xl mb-4">{specie}</h2>
+        <PlotFigure
+          options={{
+            marks: [
+              Plot.dot(penguins.filter(p => p.species === specie), {
+                x: "culmen_length_mm",
+                y: "culmen_depth_mm",
+                stroke: "species",
+              }),
+            ],
+          }}
+        />
+      </div>
+    ))}
+  </div>
 </Layout>

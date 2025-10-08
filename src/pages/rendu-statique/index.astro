@@ -1,0 +1,14 @@
+---
+import penguins from "../../assets/penguins.json";
+const species = [...new Set(penguins.map((p) => p.species))].sort();
+---
+
+<ul>
+  {
+    species.map((s) => (
+      <li>
+        <a href={`/rendu-statique/${s}`}>Espece : {s}</a>
+      </li>
+    ))
+  }
+</ul>

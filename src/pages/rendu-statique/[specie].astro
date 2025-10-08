@@ -1,0 +1,45 @@
+---
+import penguins from "../../assets/penguins.json";
+import PlotFigure from "../../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+
+export async function getStaticPaths() {
+  // Récupérer toutes les espèces uniques
+  const species = [...new Set(penguins.map(p => p.species))];
+  
+  return species.map(specie => ({
+    params: { specie }
+  }));
+}
+
+const { specie } = Astro.params;
+
+// Filtrer les manchots pour l'espèce spécifiée
+const filteredPenguins = penguins.filter((p) => p.species === specie);
+
+// Configuration du graphique
+const plotOptions = {
+  grid: true,
+  marks: [
+    Plot.dot(filteredPenguins, {
+      x: "culmen_length_mm",
+      y: "culmen_depth_mm",
+      fill: "steelblue",
+      r: 4,
+      fillOpacity: 0.7,
+    }),
+  ],
+  x: {
+    label: "Longueur du culmen (mm)",
+  },
+  y: {
+    label: "Profondeur du culmen (mm)",
+  },
+  title: `Relation Profondeur vs Longueur du culmen - Manchots ${specie}`,
+};
+---
+
+<h1>Manchots de l'espece {specie}</h1>
+<p>{filteredPenguins.length} manchots trouves pour l'espece {specie}</p>
+
+<PlotFigure options={plotOptions} />
